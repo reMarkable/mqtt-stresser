@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"os"
@@ -160,8 +160,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	verboseLogger.SetOutput(ioutil.Discard)
-	errorLogger.SetOutput(ioutil.Discard)
+	verboseLogger.SetOutput(io.Discard)
+	errorLogger.SetOutput(io.Discard)
 
 	if *argLogLevel == 1 || *argLogLevel == 3 {
 		errorLogger.SetOutput(os.Stderr)
