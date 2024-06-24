@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"os"
@@ -51,7 +51,7 @@ var (
 	argKey                  = flag.String("key", "", "client private key for authentication, if required by server.")
 	argCert                 = flag.String("cert", "", "client certificate for authentication, if required by server.")
 	argPauseBetweenMessages = flag.String("pause-between-messages", "0s", "Adds a pause between sending messages to simulate sensors sending messages infrequently")
-	argTopicBasePath		= flag.String("topic-base-path", "", "topic base path, if empty the default is internal/mqtt-stresser")
+	argTopicBasePath        = flag.String("topic-base-path", "", "topic base path, if empty the default is internal/mqtt-stresser")
 )
 
 type Result struct {
@@ -116,7 +116,7 @@ func validateTLSFiles(argCafile, argKey, argCert string) error {
 // loadTLSFile loads the given file. If the filename is empty neither data nor an error is returned.
 func loadTLSFile(fileName string) ([]byte, error) {
 	if len(fileName) > 0 {
-		data, err := ioutil.ReadFile(fileName)
+		data, err := os.ReadFile(fileName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to load TLS file: %q: %w", fileName, err)
 		}
@@ -160,8 +160,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	verboseLogger.SetOutput(ioutil.Discard)
-	errorLogger.SetOutput(ioutil.Discard)
+	verboseLogger.SetOutput(io.Discard)
+	errorLogger.SetOutput(io.Discard)
 
 	if *argLogLevel == 1 || *argLogLevel == 3 {
 		errorLogger.SetOutput(os.Stderr)
@@ -185,7 +185,7 @@ func main() {
 		if strings.HasPrefix(*argConstantPayload, "@") {
 			verboseLogger.Printf("Set constant payload from file %s\n", *argConstantPayload)
 			payloadGenerator = filePayloadGenerator(*argConstantPayload)
-		}else {
+		} else {
 			verboseLogger.Printf("Set constant payload to %s\n", *argConstantPayload)
 			payloadGenerator = constantPayloadGenerator(*argConstantPayload)
 		}

@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -29,7 +28,7 @@ func constantPayloadGenerator(payload string) PayloadGenerator {
 
 func filePayloadGenerator(filepath string) PayloadGenerator {
 	inputPath := strings.Replace(filepath, "@", "", 1)
-	content, err := ioutil.ReadFile(inputPath)
+	content, err := os.ReadFile(inputPath)
 	if err != nil {
 		fmt.Printf("error reading payload file: %v\n", err)
 		os.Exit(1)
